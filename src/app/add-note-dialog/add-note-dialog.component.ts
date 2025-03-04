@@ -4,6 +4,7 @@ import { NoteListService } from '../firebase-services/note-list.service'
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
+
 @Component({
   selector: 'app-add-note-dialog',
   standalone: true,
@@ -25,7 +26,14 @@ export class AddNoteDialogComponent {
   }
 
   addNote(){
-    //beachte das closeDialog() zum Schluss kommt, denn es leert die Variablen
-    this.closeDialog();
+    let note:Note = {
+      id: "",
+      type: "note",
+      title: this.title,
+      content: this.description,
+      marked: false,
+    }
+    this.noteService.addNote(note);
+    this.addDialogClosed.emit(false);
   }
 }
