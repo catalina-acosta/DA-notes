@@ -7,6 +7,7 @@ import { HeaderComponent } from './shared/header/header.component';
 import { AddNoteDialogComponent } from './add-note-dialog/add-note-dialog.component';
 
 
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -17,4 +18,5 @@ import { AddNoteDialogComponent } from './add-note-dialog/add-note-dialog.compon
 export class AppComponent {
   title = 'DAKeep';
   addDialogOpen = false;
+
 }
