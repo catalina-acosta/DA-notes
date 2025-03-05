@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { inject } from '@angular/core';
-import { Firestore, collection, doc, collectionData, onSnapshot, addDoc, updateDoc, deleteDoc } from '@angular/fire/firestore';
+import { Firestore, collection, doc, collectionData, onSnapshot, addDoc, updateDoc, deleteDoc, query, where, limit, orderBy } from '@angular/fire/firestore';
 import { Note } from '../interfaces/note.interface';
 
 
@@ -12,15 +12,16 @@ import { Note } from '../interfaces/note.interface';
 export class NoteListService {
   trashNotes: Note[] = [];
   normalNotes: Note[] = [];
+  normalMarkedNotes: Note[] = [];
 
   unsubTrash;
   unsubNotes;
-
-  firestore = inject(Firestore);
+  unsubMarkedNotes;
   
-  constructor() { 
+  constructor(private firestore: Firestore) { 
     this.unsubTrash = this.subTrashList();
     this.unsubNotes = this.subNotesList();
+    this.unsubMarkedNotes = this.subMarkedNotesList();
   }
 
   async deleteNote(colId: "notes" | "trash", docId:string) {
@@ -70,6 +71,7 @@ export class NoteListService {
   ngonDestroy() {
     this.unsubTrash(); // equivallent of unsubscribe
     this.unsubNotes(); 
+    this.unsubMarkedNotes();
 
   }
 
@@ -83,10 +85,21 @@ export class NoteListService {
   }
 
   subNotesList() {
-    return onSnapshot(this.getItemsRef("notes"),  (list) => {
+    const q = query(this.getItemsRef("notes"), orderBy('title'), limit(3)) // using query to filer results with orderedBy and a limit of 3
+    return onSnapshot(q,  (list) => {
       this.normalNotes = [];
       list.forEach(element => {
         this.normalNotes.push(this.setNotenoteect(element.data(), element.id));
+      });
+    });
+  }
+
+  subMarkedNotesList() {
+    const q = query(this.getItemsRef("notes"), where("marked", "==", true)) // using query to filer results with orderedBy and a limit of 3
+    return onSnapshot(q,  (list) => {
+      this.normalMarkedNotes = [];
+      list.forEach(element => {
+        this.normalMarkedNotes.push(this.setNotenoteect(element.data(), element.id));
         
       })
     });

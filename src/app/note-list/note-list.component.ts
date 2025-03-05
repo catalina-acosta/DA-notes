@@ -23,8 +23,16 @@ export class NoteListComponent {
     this.noteList = this.getDummyData()
   }
 
-  getList() {
-    return this.noteService.normalNotes;
+  getList(): Note[]{
+    if (this.status == 'notes') {
+      if (this.favFilter == 'all') {
+        return this.noteService.normalNotes;
+      } else {
+        return this.noteService.normalMarkedNotes;
+      }
+    } else {
+      return this.noteService.trashNotes
+    }
   }
 
   getTrashList() {
