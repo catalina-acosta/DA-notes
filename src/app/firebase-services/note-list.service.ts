@@ -17,8 +17,10 @@ export class NoteListService {
   unsubTrash;
   unsubNotes;
   unsubMarkedNotes;
+
+  firestore = inject(Firestore);
   
-  constructor(private firestore: Firestore) { 
+  constructor() { 
     this.unsubTrash = this.subTrashList();
     this.unsubNotes = this.subNotesList();
     this.unsubMarkedNotes = this.subMarkedNotesList();
